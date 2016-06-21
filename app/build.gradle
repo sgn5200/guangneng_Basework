@@ -1,0 +1,55 @@
+apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
+
+    defaultConfig {
+        applicationId "com.globalroam.gruc.enterprise"
+        minSdkVersion 14
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            applicationIdSuffix ".debug"
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    dependencies {
+        compile fileTree(include: ['*.jar'], dir: 'libs')
+
+        //image loader
+        compile files('libs/universal-image-loader-1.9.4-with-sources.jar')
+
+        //google flexbox
+        compile 'com.google.android:flexbox:0.2.1'
+
+        //google support
+        compile 'com.android.support:appcompat-v7:23.3.0'
+        compile 'com.android.support:design:23.3.0'
+        compile 'com.google.code.gson:gson:2.6.2'
+
+        //rx
+        compile 'io.reactivex:rxandroid:1.0.1'
+        compile 'io.reactivex:rxjava:1.0.14'
+        //retrofit
+        compile 'com.squareup.retrofit2:retrofit:2.1.0'
+        compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+        compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+
+        //test  使用google chrome://inspect 抓包  release 时去掉
+        compile 'com.facebook.stetho:stetho:1.3.1'
+        compile 'com.facebook.stetho:stetho-okhttp3:1.3.1'
+    }
+}
+
