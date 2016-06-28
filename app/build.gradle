@@ -9,16 +9,33 @@ android {
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
     }
+
+    signingConfigs { //签名配置
+        release {
+            storeFile file("../android_keystore")
+            storePassword "globalroam"
+            keyAlias "cd"
+            keyPassword "123456"
+        }
+    }
+
     buildTypes {
+        //gradlew installRelease 打包安装
+        //gradlew assembleDebug 编译并打Debug包
+        //gradlew assembleRelease 编译并打Release的包
+
+
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+
         }
 
         debug {
-            applicationIdSuffix ".debug"
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {

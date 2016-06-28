@@ -201,7 +201,6 @@ public abstract class BaseActivity extends FragmentActivity implements IDelegate
     protected void lunchActivity(Class<?> className) {
         startActivity(new Intent(this, className));
         overridePendingTransition(R.anim.left_in, R.anim.left_out);
-        finish();
     }
 
     /**

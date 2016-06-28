@@ -1,70 +1,61 @@
 package com.globalroam.gruc.enterprise.mvp.login;
 
-import android.content.Context;
-
-import com.globalroam.gruc.enterprise.http.ApiManager;
-import com.globalroam.gruc.enterprise.http.MySubscriber;
-import com.globalroam.gruc.enterprise.http.entity.Girl;
-import com.globalroam.gruc.enterprise.http.entity.GirlData;
+import com.globalroam.gruc.enterprise.mvp.Presenter;
 import com.globalroam.gruc.enterprise.utils.Log;
-
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by shang guangneng on 2016/6/8 0008.
  */
 
-public class LoginPresenter {
+public class LoginPresenter implements Presenter,LoginListener {
 
-    private MySubscriber<GirlData> mySubscriber;
+    private LoginView view;
+    private LoginModel model;
+    private String username,password;
 
-    private String TAG = getClass().getSimpleName();
+    private String TAG=getClass().getSimpleName();
 
-    public LoginPresenter(LoginFab fab, Context context) {
-        mySubscriber = new MySubscriber<GirlData>(true,context) {
-            @Override
-            public void onStart() {
-                super.onStart();
-            }
+    public LoginPresenter(LoginView fab,String username,String password) {
+        this.view = fab;
+        model=new LoginModelImp(this);
 
-            @Override
-            public void onNext(GirlData girlData) {
-                super.onNext(girlData);
-
-                for(Girl girl:girlData.getGirls()){
-                    Log.i(TAG,girl.toString());
-                }
-
-                fab.loginSuccess();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                super.onError(e);
-                Log.e(TAG,e.toString());
-                fab.loginPasswordError();
-                fab.loginUserNameError();
-            }
-
-            @Override
-            public void onCompleted() {
-                super.onCompleted();
-            }
-        };
+        this.username=username;
+        this.password=password;
     }
 
-    public void login(String userName, String password) {
 
-
-
+    @Override
+    public void executeRx(String tag) {
+        Log.i(tag);
     }
 
-    public void testApi(int page) {
-        ApiManager.getInstance()
-                .getGirlData(page)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(mySubscriber);
+    @Override
+    public void executeRxRetrofit(String tag) {
+        Log.i(tag);
+        model.login(username,password);
+    }
+
+    @Override
+    public void onSuccess() {
+        Log.i(TAG);
+        view.loginSuccess();
+    }
+
+    @Override
+    public void onError() {
+        Log.i(TAG);
+        view.loginError();
+    }
+
+    @Override
+    public void onStart() {
+        Log.i(TAG);
+        view.showDialog();
+    }
+
+    @Override
+    public void onEnd() {
+        Log.i(TAG);
+        view.hideDialog();
     }
 }

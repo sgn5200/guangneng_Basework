@@ -5,20 +5,19 @@ import android.view.View;
 import android.widget.Button;
 
 import com.globalroam.gruc.enterprise.R;
+import com.globalroam.gruc.enterprise.http.LoadDialog;
+import com.globalroam.gruc.enterprise.http.entity.User;
 import com.globalroam.gruc.enterprise.mvp.MainActivity;
 import com.globalroam.gruc.enterprise.baseui.BaseActivity;
-import com.globalroam.gruc.enterprise.http.entity.Girl;
-import com.globalroam.gruc.enterprise.http.entity.GirlData;
-import com.globalroam.gruc.enterprise.utils.Log;
-import com.globalroam.gruc.enterprise.utils.SPUtil;
+import com.globalroam.gruc.enterprise.mvp.Presenter;
 
-import rx.Subscriber;
-
-public class LoginActivity extends BaseActivity implements LoginFab, View.OnClickListener {
+public class LoginActivity extends BaseActivity implements LoginView, View.OnClickListener{
 
     private Button bt0, bt1, bt2, bt3;
-    private Subscriber<GirlData> sub;
-    LoginPresenter loginControl;
+
+    private Presenter loginPresenter;
+    private LoadDialog loadDialog;
+
     int page=1;
 
     @Override
@@ -34,37 +33,13 @@ public class LoginActivity extends BaseActivity implements LoginFab, View.OnClic
         bt3 = bind(R.id.bt3);
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initListener(this, bt0, bt1, bt2, bt3);
 
-        sub=new Subscriber<GirlData>() {
-            @Override
-            public void onCompleted() {
-                Log.i(TAG);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.e(TAG," onError "+e.toString());
-
-            }
-
-            @Override
-            public void onNext(GirlData girlData) {
-                Log.i(TAG,girlData.isError()+"");
-
-                for(Girl girl:girlData.getGirls()){
-                    Log.i(TAG,girl.toString());
-                }
-            }
-        };
-
-        loginControl = new LoginPresenter(this,this);
+        loginPresenter = new LoginPresenter(this,"username","password");
     }
-
 
     @Override
     public void loginSuccess() {
@@ -73,14 +48,24 @@ public class LoginActivity extends BaseActivity implements LoginFab, View.OnClic
     }
 
     @Override
-    public void loginUserNameError() {
-        showToast("用户名错误");
-
+    public void loginError() {
+        showToast("密码错误");
     }
 
     @Override
-    public void loginPasswordError() {
-        showToast("密码错误");
+    public void showDialog() {
+        if(null==loadDialog){
+            loadDialog=new LoadDialog(this);
+        }
+        loadDialog.title("Network request").message("Loading...").cancelable(false).show();
+    }
+
+    @Override
+    public void hideDialog() {
+        if(loadDialog!=null){
+            loadDialog.dismiss();
+            loadDialog=null;
+        }
     }
 
     @Override
@@ -88,20 +73,23 @@ public class LoginActivity extends BaseActivity implements LoginFab, View.OnClic
         switch (v.getId()) {
             case R.id.bt0:
                 showToast("click bt0");
-
-                SPUtil.put(this,"BT0","page"+page);
+                loginPresenter.executeRxRetrofit("Login");
                 break;
             case R.id.bt1:
-                showToast(SPUtil.get(this,"BT0","null")+"");
+                User user=new User();
+                user.setDomain("caas.grcaassip.com");
+                user.setEmail("sgn5200@gmail.com");
+                user.setMobile("123456789");
+                user.setPassword("123456");
+                user.setUsername("aaa101");
                 break;
             case R.id.bt2:
                 page++;
-                loginControl.testApi(page);
                 break;
             case R.id.bt3:
                 showToast("click bt3");
-                loginControl.login("username","password");
                 break;
         }
     }
+
 }
