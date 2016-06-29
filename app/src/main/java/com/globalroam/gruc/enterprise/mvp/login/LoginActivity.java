@@ -3,20 +3,32 @@ package com.globalroam.gruc.enterprise.mvp.login;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.globalroam.gruc.enterprise.R;
+import com.globalroam.gruc.enterprise.db.RealmManager;
 import com.globalroam.gruc.enterprise.http.LoadDialog;
 import com.globalroam.gruc.enterprise.http.entity.User;
 import com.globalroam.gruc.enterprise.mvp.MainActivity;
 import com.globalroam.gruc.enterprise.baseui.BaseActivity;
 import com.globalroam.gruc.enterprise.mvp.Presenter;
+import com.globalroam.gruc.enterprise.utils.Log;
+
+import java.util.List;
+
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class LoginActivity extends BaseActivity implements LoginView, View.OnClickListener{
 
     private Button bt0, bt1, bt2, bt3;
-
+    private TextView tvInput;
     private Presenter loginPresenter;
     private LoadDialog loadDialog;
+
+    List<Subscription> subscriptionList;
 
     int page=1;
 
@@ -31,6 +43,7 @@ public class LoginActivity extends BaseActivity implements LoginView, View.OnCli
         bt1 = bind(R.id.bt1);
         bt2 = bind(R.id.bt2);
         bt3 = bind(R.id.bt3);
+        tvInput=bind(R.id.inputTest);
     }
 
     @Override
@@ -85,11 +98,68 @@ public class LoginActivity extends BaseActivity implements LoginView, View.OnCli
                 break;
             case R.id.bt2:
                 page++;
+
+                RealmManager manager=new RealmManager();
+                User u=new User();
+                u.setDomain("caas.grcaassip.com");
+                u.setEmail("sgn5200@gmail.com");
+                u.setMobile("123456789");
+                u.setPassword("123456");
+                u.setUsername(tvInput.getText().toString());
+
+
+                Subscription subscription=manager.rigestUser(u)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<User>() {
+                            @Override
+                            public void onCompleted() {
+                                Log.i(TAG);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.e(TAG,"onError");
+                                e.printStackTrace();
+                            }
+
+                            @Override
+                            public void onNext(User user) {
+                                Log.i(TAG);
+                            }
+                        });
                 break;
             case R.id.bt3:
-                showToast("click bt3");
+
+                RealmManager manager1=new RealmManager();
+
+                Subscription subscription1=manager1.findUser(tvInput.getText().toString())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<String>() {
+                            @Override
+                            public void onCompleted() {
+                                Log.i(TAG);
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.e(TAG,"onError");
+                                e.printStackTrace();
+                            }
+
+                            @Override
+                            public void onNext(String user3) {
+                                Log.i(TAG,"111111");
+                                Log.i(TAG,"user= "+user3);
+                            }
+                        });
+
+                Log.i(TAG,"222222222");
+
                 break;
         }
     }
+
 
 }

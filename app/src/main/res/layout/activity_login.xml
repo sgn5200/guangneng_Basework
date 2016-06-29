@@ -34,4 +34,9 @@
             android:text="bt3"
             android:textAllCaps="false" />
 
+        <EditText
+            android:id="@+id/inputTest"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
+
 </LinearLayout>

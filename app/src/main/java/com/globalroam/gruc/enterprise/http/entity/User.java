@@ -1,10 +1,12 @@
 package com.globalroam.gruc.enterprise.http.entity;
 
+import io.realm.RealmObject;
+
 /**
  * Created by shang guangneng on 2016/6/21 0021.
  */
 
-public class User {
+public class User extends RealmObject {
     private String username;
     private String password;
     private String email;

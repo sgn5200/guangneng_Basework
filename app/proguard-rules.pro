@@ -16,6 +16,7 @@
 #   public *;
 #}
 
+
 #指定代码的压缩级别
 -optimizationpasses 5
 #包明不混合大小写
@@ -57,6 +58,9 @@
 -keepattributes Signature
 -keepattributes Exceptions
 
+#bugly
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}
 
 #忽略警告
 #-ignorewarning
@@ -69,3 +73,4 @@
 -printusage unused.txt
 #混淆前后的映射
 -printmapping mapping.txt
+

@@ -91,12 +91,7 @@ public class ApiManager implements ApiRepository {
         HashMap<String,String> map=new HashMap<>();
 
         map.put("Authorization",token);
-        get(null);
         return apiService.getGRUCUsers(token);
-    }
-
-    private void get(@NonNull String a){
-
     }
 
     public Observable<ResponseBody> createUser(User user) {
